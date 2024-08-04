@@ -32,7 +32,3 @@ runs:
     - ${{ inputs.requirements }}
     - ${{ inputs.pipenv }}
     - ${{ inputs.poetry }}
-  steps:
-    - name: Set sbom_file_path output
-      id: set_output
-      run: echo "::set-output name=sbom_file_path::$SBOM_FILE_PATH"
