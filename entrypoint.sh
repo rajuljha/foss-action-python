@@ -6,8 +6,8 @@ if [ -z "$INPUT_ENVIRONMENT" ] && [ -z "$INPUT_REQUIREMENTS" ] && [ -z "$INPUT_P
   exit 1
 fi
 
-# Set the working directory to the GITHUB_WORKSPACE
-WORKDIR=${GITHUB_WORKSPACE:-/github/workspace}
+# Set the working directory to /github/workspace
+WORKDIR=$GITHUB_WORKSPACE
 SBOM_DIR="$WORKDIR/sbom"
 mkdir -p "$SBOM_DIR"
 
@@ -43,13 +43,13 @@ if [ "$INPUT_POETRY" = "true" ]; then
   sbom_files+=("${SBOM_DIR}/sbom_poetry.json")
 fi
 
-# Output the paths of generated SBOM files
+# List files for debugging
+echo "Files in SBOM directory:"
+ls -l "$SBOM_DIR"
+
+# Set environment variable for the path of the SBOM files
 if [ ${#sbom_files[@]} -gt 0 ]; then
-  echo "SBOM file paths:"
   for file in "${sbom_files[@]}"; do
-    echo "$file"
     echo "SBOM_FILE_PATH=$file" >> $GITHUB_ENV
   done
-else
-  echo "No SBOM files were generated."
 fi
