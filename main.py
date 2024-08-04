@@ -1,45 +1,54 @@
 import os
 from subprocess import Popen, PIPE
 
-print(os.environ)
-ENVIRONMENT = os.environ.get('INPUT_ENVIRONMENT')
-REQUIREMENTS = os.environ.get('INPUT_REQUIREMENTS')
-PIPENV = os.environ.get('INPUT_PIPENV')
-POETRY = os.environ.get('INPUT_POETRY')
-GITHUB_ENV = os.getenv('GITHUB_ENV')
 
-if (not ENVIRONMENT) or (not REQUIREMENTS) or (not PIPENV) or (not POETRY):
-    ENVIRONMENT = True
+def run_command(command, args, cwd):
+    process = Popen([command] + args, stdout=PIPE, cwd=cwd)
+    result = process.communicate()[0]
+    return result.decode("utf-8").strip()
 
+
+# Get environment variables
+ENVIRONMENT = os.environ.get('INPUT_ENVIRONMENT') == 'true'
+REQUIREMENTS = os.environ.get('INPUT_REQUIREMENTS') == 'true'
+PIPENV = os.environ.get('INPUT_PIPENV') == 'true'
+POETRY = os.environ.get('INPUT_POETRY') == 'true'
+
+# Get the repository root directory from the GITHUB_WORKSPACE environment var
+repo_root = os.environ.get('GITHUB_WORKSPACE', '/github/workspace')
+
+sbom_files = []
 command = "cyclonedx-py"
 
 if ENVIRONMENT:
-    process = Popen([f"{command}", "environment"], stdout=PIPE)
-    result = process.communicate()[0]
-    sbom_file = "sbom_env.json"
-    with open(f"{sbom_file}", "w+") as f:
-        f.write(result.decode("utf-8").strip())
+    output = run_command(command, ["environment"], cwd=repo_root)
+    env_file = os.path.join(repo_root, "sbom_env.json")
+    with open(env_file, "w+") as f:
+        f.write(output)
+    sbom_files.append(env_file)
 
 if REQUIREMENTS:
-    process = Popen([f"{command}", "requirements"], stdout=PIPE)
-    result = process.communicate()[0]
-    sbom_file = "sbom_req.json"
-    with open(f"{sbom_file}", "w+") as f:
-        f.write(result.decode("utf-8").strip())
+    output = run_command(command, ["requirements"], cwd=repo_root)
+    req_file = os.path.join(repo_root, "sbom_req.json")
+    with open(req_file, "w+") as f:
+        f.write(output)
+    sbom_files.append(req_file)
 
 if PIPENV:
-    process = Popen([f"{command}", "pipenv"], stdout=PIPE)
-    result = process.communicate()[0]
-    sbom_file = "sbom_pipenv.json"
-    with open(f"{sbom_file}", "w+") as f:
-        f.write(result.decode("utf-8").strip())
+    output = run_command(command, ["pipenv"], cwd=repo_root)
+    pipenv_file = os.path.join(repo_root, "sbom_pipenv.json")
+    with open(pipenv_file, "w+") as f:
+        f.write(output)
+    sbom_files.append(pipenv_file)
 
 if POETRY:
-    process = Popen([f"{command}", "poetry"], stdout=PIPE)
-    result = process.communicate()[0]
-    sbom_file = "sbom_pipenv.json"
-    with open(f"{sbom_file}", "w+") as f:
-        f.write(result.decode("utf-8").strip())
+    output = run_command(command, ["poetry"], cwd=repo_root)
+    poetry_file = os.path.join(repo_root, "sbom_poetry.json")
+    with open(poetry_file, "w+") as f:
+        f.write(output)
+    sbom_files.append(poetry_file)
 
-with open(GITHUB_ENV, 'a') as github_env:
-    github_env.write(f"SBOM_FILE_PATH={sbom_file}")
+# Write the output paths to GITHUB_ENV
+with open(os.getenv('GITHUB_ENV'), 'a') as github_env:
+    if sbom_files:
+        github_env.write(f"SBOM_FILE_PATH={sbom_files[0]}\n")

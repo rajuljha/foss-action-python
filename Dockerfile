@@ -1,18 +1,20 @@
+# Use a slim Python image
 FROM python:3-slim
 
-WORKDIR /foss_action_python
+# Install CycloneDX Python tool
+RUN pip install cyclonedx-bom
 
-# Copy only the requirements file first to leverage caching
-COPY requirements.txt .
+# Set the working directory to the root of the action
+WORKDIR /action
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code
+# Copy the action code
 COPY . .
 
+# Make sure the script is executable
+RUN chmod +x /action/main.py
+
 # Set environment variables
-ENV PYTHONPATH /foss_action_python
+ENV PYTHONPATH /action
 
 # Run the main script
-CMD ["python", "main.py"]
+CMD ["python", "/action/main.py"]
