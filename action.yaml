@@ -1,0 +1,38 @@
+name: "Test python dependencies sbom generator"
+description: "Download Dependencies for python environments"
+author: "Rajul Jha"
+branding:
+  icon: "search"
+  color: "yellow"
+inputs:
+  environment:
+    description: "Build an SBOM from Python (virtual) Environment"
+    required: false
+    default: False
+  requirements: 
+    description: "Build an SBOM from pip requirements file."
+    required: false
+    default: False
+  pipenv:
+    description: "Build an SBOM from Pipenv manifest."
+    required: False
+    default: False
+  poetry:
+    description: "Build an SBOM from Poetry project"
+    required: False
+    default: True
+outputs:
+  sbom_file_path:
+    description: "Path to the sbom file generated."
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.environment }}
+    - ${{ inputs.requirements }}
+    - ${{ inputs.pipenv }}
+    - ${{ inputs.poetry }}
+  steps:
+    - name: Set sbom_file_path output
+      id: set_output
+      run: echo "::set-output name=sbom_file_path::$SBOM_FILE_PATH"
