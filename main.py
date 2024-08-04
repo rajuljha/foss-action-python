@@ -1,10 +1,15 @@
 import os
+import sys
 from subprocess import Popen, PIPE
 
 
 def run_command(command, args, cwd):
-    process = Popen([command] + args, stdout=PIPE, cwd=cwd)
-    result = process.communicate()[0]
+    print(f"Running command: {command} {' '.join(args)} in {cwd}")
+    process = Popen([command] + args, stdout=PIPE, stderr=PIPE, cwd=cwd)
+    result, error = process.communicate()
+    if process.returncode != 0:
+        print(f"Error: {error.decode('utf-8').strip()}")
+        sys.exit(process.returncode)
     return result.decode("utf-8").strip()
 
 
@@ -14,8 +19,9 @@ REQUIREMENTS = os.environ.get('INPUT_REQUIREMENTS') == 'true'
 PIPENV = os.environ.get('INPUT_PIPENV') == 'true'
 POETRY = os.environ.get('INPUT_POETRY') == 'true'
 
-# Get the repository root directory from the GITHUB_WORKSPACE environment var
+# Get the repository root directory from the GITHUB_WORKSPACE environment
 repo_root = os.environ.get('GITHUB_WORKSPACE', '/github/workspace')
+print(f"Repository root: {repo_root}")
 
 sbom_files = []
 command = "cyclonedx-py"
