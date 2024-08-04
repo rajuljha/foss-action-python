@@ -7,14 +7,11 @@ RUN pip install cyclonedx-bom
 # Set the working directory to the root of the action
 WORKDIR /action
 
-# Copy the action code
+# Copy the action code and entrypoint script
 COPY . .
 
 # Make sure the script is executable
-RUN chmod +x /action/main.py
+RUN chmod +x /action/entrypoint.sh
 
-# Set environment variables
-ENV PYTHONPATH /action
-
-# Run the main script
-CMD ["python", "/action/main.py"]
+# Set entrypoint to the script
+ENTRYPOINT ["/action/entrypoint.sh"]

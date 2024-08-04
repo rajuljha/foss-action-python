@@ -20,7 +20,7 @@ PIPENV = os.environ.get('INPUT_PIPENV') == 'true'
 POETRY = os.environ.get('INPUT_POETRY') == 'true'
 
 # Get the repository root directory from the GITHUB_WORKSPACE environment
-repo_root = os.environ.get('GITHUB_WORKSPACE', '/github/workspace')
+repo_root = os.environ.get('GITHUB_WORKSPACE')
 print(f"Repository root: {repo_root}")
 
 sbom_files = []

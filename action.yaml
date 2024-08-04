@@ -8,27 +8,23 @@ inputs:
   environment:
     description: "Build an SBOM from Python (virtual) Environment"
     required: false
-    default: False
-  requirements: 
+    default: false
+  requirements:
     description: "Build an SBOM from pip requirements file."
     required: false
-    default: False
+    default: false
   pipenv:
     description: "Build an SBOM from Pipenv manifest."
-    required: False
-    default: False
+    required: false
+    default: false
   poetry:
     description: "Build an SBOM from Poetry project"
-    required: False
-    default: True
+    required: false
+    default: false
 outputs:
   sbom_file_path:
     description: "Path to the sbom file generated."
+    value: ${{ steps.generate_sbom.outputs.sbom_file_path }}
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.environment }}
-    - ${{ inputs.requirements }}
-    - ${{ inputs.pipenv }}
-    - ${{ inputs.poetry }}
