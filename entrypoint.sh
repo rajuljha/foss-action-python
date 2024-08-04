@@ -47,9 +47,9 @@ fi
 echo "Files in SBOM directory:"
 ls -l "$SBOM_DIR"
 
-# Set environment variable for the path of the SBOM files
-if [ ${#sbom_files[@]} -gt 0 ]; then
-  for file in "${sbom_files[@]}"; do
-    echo "SBOM_FILE_PATH=$file" >> $GITHUB_ENV
-  done
+# Set environment variable for the path of the SBOM file
+if [ -n "$sbom_file" ]; then
+  echo "SBOM_FILE_PATH=$sbom_file" >> $GITHUB_ENV
+else
+  echo "No SBOM file was generated."
 fi
