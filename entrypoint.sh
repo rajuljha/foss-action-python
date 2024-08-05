@@ -21,7 +21,7 @@ if [ "$INPUT_ENVIRONMENT" = "true" ]; then
 elif [ "$INPUT_REQUIREMENTS" = "true" ]; then
   echo "Generating SBOM for requirements..."
   sbom_file="${SBOM_DIR}/sbom_py.json"
-  python -m cyclonedx-py requirements "$GITHUB_WORKSPACE/requirements.txt" > "$sbom_file"
+  cyclonedx-py requirements "$GITHUB_WORKSPACE/requirements.txt" -o "$sbom_file"
 elif [ "$INPUT_PIPENV" = "true" ]; then
   echo "Generating SBOM for pipenv..."
   sbom_file="${SBOM_DIR}/sbom_py.json"
