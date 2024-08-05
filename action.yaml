@@ -24,7 +24,12 @@ inputs:
 outputs:
   sbom_file_path:
     description: "Path to the sbom file generated."
-    value: ${{ steps.generate_sbom.outputs.sbom_file_path }}
+    # value: ${{ steps.generate_sbom.outputs.sbom_file_path }}
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - ${{ inputs.environment }}
+    - ${{ inputs.requirements }}
+    - ${{ inputs.pipenv }}
+    - ${{ inputs.poetry }}
