@@ -3,16 +3,17 @@
 # Ensure at least one input parameter is provided
 if [ -z "$INPUT_ENVIRONMENT" ] && [ -z "$INPUT_REQUIREMENTS" ] && [ -z "$INPUT_PIPENV" ] && [ -z "$INPUT_POETRY" ]; then
   echo "At least one input parameter must be set (environment, requirements, pipenv, or poetry)."
-  exit 1
+  echo "Defaulting to environment..."
+  $INPUT_ENVIRONMENT = true
 fi
 
 # Set the working directory to /github/workspace
 WORKDIR=/github/workspace
-# SBOM_DIR="$WORKDIR/sbom"
-# mkdir -p "$SBOM_DIR"
+SBOM_DIR="$WORKDIR/sbom"
+mkdir -p "$SBOM_DIR"
 
 # Determine which command to run based on inputs
-sbom_file="$WORKDIR/sbom_py.json"
+sbom_file="$SBOM_DIR/sbom_py.json"
 
 if [ "$INPUT_ENVIRONMENT" = "true" ]; then
   echo "Generating SBOM for environment..."
