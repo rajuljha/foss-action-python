@@ -7,7 +7,7 @@ if [ -z "$INPUT_ENVIRONMENT" ] && [ -z "$INPUT_REQUIREMENTS" ] && [ -z "$INPUT_P
 fi
 
 # Set the working directory to /github/workspace
-WORKDIR=/github/workspace
+WORKDIR=$GITHUB_WORKSPACE
 SBOM_DIR="$WORKDIR/sbom"
 mkdir -p "$SBOM_DIR"
 
@@ -39,7 +39,8 @@ ls -l "$SBOM_DIR"
 
 # Set the GitHub action output variable for the path of the SBOM file
 if [ -n "$sbom_file" ]; then
-  echo "::set-output name=sbom_file_path::$sbom_file"
+#   echo "::set-output name=sbom_file_path::$sbom_file"
+  echo "sbom_file_path=$sbom_file" >> $GITHUB_OUTPUT
 else
   echo "No SBOM file was generated."
 fi
