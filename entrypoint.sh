@@ -16,19 +16,19 @@ sbom_file=""
 
 if [ "$INPUT_ENVIRONMENT" = "true" ]; then
   echo "Generating SBOM for environment..."
-  sbom_file="${SBOM_DIR}/sbom_env.json"
+  sbom_file="${SBOM_DIR}/sbom_py.json"
   python -m cyclonedx-py environment $GITHUB_WORKSPACE > "$sbom_file"
 elif [ "$INPUT_REQUIREMENTS" = "true" ]; then
   echo "Generating SBOM for requirements..."
-  sbom_file="${SBOM_DIR}/sbom_req.json"
+  sbom_file="${SBOM_DIR}/sbom_py.json"
   python -m cyclonedx-py requirements "$GITHUB_WORKSPACE/requirements.txt" > "$sbom_file"
 elif [ "$INPUT_PIPENV" = "true" ]; then
   echo "Generating SBOM for pipenv..."
-  sbom_file="${SBOM_DIR}/sbom_pipenv.json"
+  sbom_file="${SBOM_DIR}/sbom_py.json"
   python -m cyclonedx-py pipenv "$GITHUB_WORKSPACE" > "$sbom_file"
 elif [ "$INPUT_POETRY" = "true" ]; then
   echo "Generating SBOM for poetry..."
-  sbom_file="${SBOM_DIR}/sbom_poetry.json"
+  sbom_file="${SBOM_DIR}/sbom_py.json"
   python -m cyclonedx-py poetry "$GITHUB_WORKSPACE" > "$sbom_file"
 fi
 
@@ -36,10 +36,10 @@ fi
 echo "Files in SBOM directory:"
 ls -l "$SBOM_DIR"
 
-# Set the GitHub action output variable for the path of the SBOM file
-if [ -n "$sbom_file" ]; then
-#   echo "::set-output name=sbom_file_path::$sbom_file"
-  echo "sbom_file_path=$sbom_file" >> $GITHUB_OUTPUT
-else
-  echo "No SBOM file was generated."
-fi
+# # Set the GitHub action output variable for the path of the SBOM file
+# if [ -n "$sbom_file" ]; then
+# #   echo "::set-output name=sbom_file_path::$sbom_file"
+#   echo "sbom_file_path=$sbom_file" >> $GITHUB_OUTPUT
+# else
+#   echo "No SBOM file was generated."
+# fi
