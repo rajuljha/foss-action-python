@@ -36,10 +36,10 @@ fi
 echo "Files in SBOM directory:"
 ls -l "$SBOM_DIR"
 
-# # Set the GitHub action output variable for the path of the SBOM file
-# if [ -n "$sbom_file" ]; then
-# #   echo "::set-output name=sbom_file_path::$sbom_file"
-#   echo "sbom_file_path=$sbom_file" >> $GITHUB_OUTPUT
-# else
-#   echo "No SBOM file was generated."
-# fi
+# Set the GitHub action output variable for the path of the SBOM file
+if [ -n "$sbom_file" ]; then
+#   echo "::set-output name=sbom_file_path::$sbom_file"
+  echo "sbom_file_path=$sbom_file" >> $GITHUB_OUTPUT
+else
+  echo "No SBOM file was generated."
+fi
